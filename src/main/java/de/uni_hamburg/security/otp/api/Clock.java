@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.aerogear.security.otp.api;
+package de.uni_hamburg.security.otp.api;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;

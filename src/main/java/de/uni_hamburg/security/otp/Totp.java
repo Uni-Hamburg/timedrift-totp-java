@@ -15,22 +15,22 @@
  * limitations under the License.
  */
 
-package org.jboss.aerogear.security.otp;
+package de.uni_hamburg.security.otp;
 
-import org.jboss.aerogear.security.otp.api.Base32;
-import org.jboss.aerogear.security.otp.api.Clock;
-import org.jboss.aerogear.security.otp.api.Digits;
-import org.jboss.aerogear.security.otp.api.Hash;
-import org.jboss.aerogear.security.otp.api.Hmac;
+import de.uni_hamburg.security.otp.api.Base32;
+import de.uni_hamburg.security.otp.api.Clock;
+import de.uni_hamburg.security.otp.api.Digits;
+import de.uni_hamburg.security.otp.api.Hash;
+import de.uni_hamburg.security.otp.api.Hmac;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-public class Totp {
+class Totp {
 
-    private final String secret;
+    protected final String secret;
     private final Clock clock;
     private static final int DELAY_WINDOW = 1;
 
@@ -110,7 +110,7 @@ public class Totp {
         return false;
     }
 
-    private int generate(String secret, long interval) {
+    protected int generate(String secret, long interval) {
         return hash(secret, interval);
     }
 

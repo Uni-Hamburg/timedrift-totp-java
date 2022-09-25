@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-package org.jboss.aerogear.security.otp;
+package de.uni_hamburg.security.otp;
 
-import org.jboss.aerogear.security.otp.api.Clock;
+import de.uni_hamburg.security.otp.api.Clock;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -38,9 +38,9 @@ public class TotpTest {
     private final static Logger LOGGER = Logger.getLogger(TotpTest.class.getName());
 
     @Mock
-    private Clock clock;
-    private Totp totp;
-    private String sharedSecret = "B2374TNIQ3HKC446";
+    protected Clock clock;
+    protected Totp totp;
+    protected String sharedSecret = "B2374TNIQ3HKC446";
 
     @Before
     public void setUp() throws Exception {
@@ -49,12 +49,13 @@ public class TotpTest {
         totp = new Totp(sharedSecret, clock);
     }
 
-    private long addElapsedTime(int seconds) {
+    protected long addElapsedTime(int seconds) {
         Calendar calendar = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"));
         LOGGER.info("Current time: " + calendar.getTime());
         calendar.add(Calendar.SECOND, seconds);
         LOGGER.info("Updated time (+" + seconds + "): " + calendar.getTime());
         long currentTimeSeconds = calendar.getTimeInMillis() / 1000;
+        LOGGER.info("Interval: " + (currentTimeSeconds/30));
         return currentTimeSeconds / 30;
     }
 

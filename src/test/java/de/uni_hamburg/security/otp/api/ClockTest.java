@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.jboss.aerogear.security.otp.api;
+package de.uni_hamburg.security.otp.api;
 
 import org.junit.Before;
 import org.junit.Ignore;
