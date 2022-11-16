@@ -15,17 +15,20 @@
  * limitations under the License.
  */
 
-package de.uni_hamburg.security.otp.api;
+package dev.uni_hamburg.security.otp.api;
 
-import org.junit.Test;
+public enum Hash {
 
-import static junit.framework.Assert.assertEquals;
+    SHA1("HMACSHA1");
 
-public class HmacTest {
+    private String hash;
 
-    @Test
-    public void testDigest() throws Exception {
-        byte[] hash = new Hmac(Hash.SHA1, Base32.decode(Base32.random()), new Clock().getCurrentInterval()).digest();
-        assertEquals(20, hash.length);
+    Hash(String hash) {
+        this.hash = hash;
+    }
+
+    @Override
+    public String toString() {
+        return hash;
     }
 }

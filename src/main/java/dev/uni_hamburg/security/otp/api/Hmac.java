@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package de.uni_hamburg.security.otp.api;
+package dev.uni_hamburg.security.otp.api;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;

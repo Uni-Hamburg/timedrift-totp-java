@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-package de.uni_hamburg.security.otp;
+package dev.uni_hamburg.security.otp;
 
-import de.uni_hamburg.security.otp.api.Clock;
+import dev.uni_hamburg.security.otp.api.Clock;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -28,9 +28,7 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import java.util.logging.Logger;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 public class TotpTest {
@@ -44,7 +42,7 @@ public class TotpTest {
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         when(clock.getCurrentInterval()).thenReturn(addElapsedTime(0));
         totp = new Totp(sharedSecret, clock);
     }

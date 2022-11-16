@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-package de.uni_hamburg.security.otp;
+package dev.uni_hamburg.security.otp;
 
-import de.uni_hamburg.security.otp.api.Base32;
-import de.uni_hamburg.security.otp.api.Clock;
-import de.uni_hamburg.security.otp.api.Digits;
-import de.uni_hamburg.security.otp.api.Hash;
-import de.uni_hamburg.security.otp.api.Hmac;
+import dev.uni_hamburg.security.otp.api.Base32;
+import dev.uni_hamburg.security.otp.api.Clock;
+import dev.uni_hamburg.security.otp.api.Digits;
+import dev.uni_hamburg.security.otp.api.Hash;
+import dev.uni_hamburg.security.otp.api.Hmac;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -117,7 +117,7 @@ class Totp {
     private int hash(String secret, long interval) {
         byte[] hash = new byte[0];
         try {
-            //Base32 encoding is just a requirement for google authenticator. We can remove it on the next releases.
+            //Base32 encoding is just a requirement for Google authenticator. We can remove it on the next releases.
             hash = new Hmac(Hash.SHA1, Base32.decode(secret), interval).digest();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();

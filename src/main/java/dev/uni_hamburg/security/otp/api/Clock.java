@@ -15,18 +15,28 @@
  * limitations under the License.
  */
 
-package de.uni_hamburg.security.otp.api;
+package dev.uni_hamburg.security.otp.api;
 
-public enum Digits {
-    SIX(1000000), SEVEN(10000000), EIGHT(100000000);
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
-    private int digits;
+public class Clock {
 
-    Digits(int digits) {
-        this.digits = digits;
+    private final int interval;
+    private Calendar calendar;
+
+    public Clock() {
+        interval = 30;
     }
 
-    public int getValue() {
-        return digits;
+    public Clock(int interval) {
+        this.interval = interval;
+    }
+
+    public long getCurrentInterval() {
+        calendar = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"));
+        long currentTimeSeconds = calendar.getTimeInMillis() / 1000;
+        return currentTimeSeconds / interval;
     }
 }
