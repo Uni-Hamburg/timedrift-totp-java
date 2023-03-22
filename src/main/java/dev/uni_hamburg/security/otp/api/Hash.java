@@ -21,7 +21,7 @@ public enum Hash {
 
     SHA1("HMACSHA1");
 
-    private String hash;
+    private final String hash;
 
     Hash(String hash) {
         this.hash = hash;
