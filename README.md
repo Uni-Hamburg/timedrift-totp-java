@@ -4,10 +4,6 @@ Fork of [aerogear-otp-java](https://github.com/aerogear-attic/aerogear-otp-java)
 
 This forks adds functionality to support time drifting Hardware TOTP tokens mentioned in [RFC 6238.](https://www.ietf.org/rfc/rfc6238.txt) Section 6.
 
-[![circle-ci](https://img.shields.io/circleci/project/github/aerogear/aerogear-otp-java/master.svg)](https://circleci.com/gh/aerogear/aerogear-otp-java)
-[![License](https://img.shields.io/badge/-Apache%202.0-blue.svg)](https://opensource.org/s/Apache-2.0)
-[![Maven Central](https://img.shields.io/maven-central/v/org.jboss.aerogear/aerogear-otp-java.svg)](http://search.maven.org/#search%7Cga%7C1%7Caerogear-otp-java)
-[![Javadocs](http://www.javadoc.io/badge/org.jboss.aerogear/aerogear-otp-java.svg?color=blue)](http://www.javadoc.io/doc/org.jboss.aerogear/aerogear-otp-java)
 
 ## Java Timed One Time Password API
 
@@ -32,7 +28,7 @@ Add to your application's `build.gradle` file
 
 ```groovy
 dependencies {
-  compile 'org.jboss.aerogear:aerogear-otp-java:1.0.0'
+  compile 'dev.uni-hamburg:timedrift-otp-java:0.2.0'
 }
 ```
 
@@ -42,8 +38,8 @@ Include the following dependencies in your project's `pom.xml`
 
 ```xml
 <dependency>
-  <groupId>org.jboss.aerogear</groupId>
-  <artifactId>aerogear-otp-java</artifactId>
-  <version>1.0.0</version>
+  <groupId>dev.uni-hamburg</groupId>
+  <artifactId>timedrift-otp-java</artifactId>
+  <version>0.2.0</version>
 </dependency>
 ```
