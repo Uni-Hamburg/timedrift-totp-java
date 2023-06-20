@@ -65,7 +65,7 @@ public class TimeDriftTotpRegressionTest {
 
     @Test
     public void testUriEncoding() {
-        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,0,0,0);
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret, 0, 0, 0);
         String url = String.format("otpauth://totp/%s?secret=%s", "john%23doe", sharedSecret);
         assertEquals(url, totp.uri("john#doe"));
     }
@@ -85,7 +85,7 @@ public class TimeDriftTotpRegressionTest {
     @Test
     public void testCustomInterval() throws Exception {
         Clock customClock = new Clock(20);
-        totp = new TimeDriftTotp(sharedSecret, customClock,0,0,0);
+        totp = new TimeDriftTotp(sharedSecret, customClock, 0, 0, 0);
         totp.now();
     }
 

@@ -52,7 +52,7 @@ public final class TimeDriftTotp extends Totp {
         // The default values for lookAhead and lookBehind mimic the behavior of
         // aerogear-otp-java. This makes this class a DropIn replacement.
         // aerogear-otp-java only checks current valid code and the past (-1)
-        this(secret, clock, 0,1);
+        this(secret, clock, 0, 1);
     }
 
     public TimeDriftTotp(String secret, int lookAheadInterval, int lookBehindInterval) {
@@ -84,8 +84,8 @@ public final class TimeDriftTotp extends Totp {
         long currentInterval = clock.getCurrentInterval();
 
         int lookAhead = lookAheadInterval + timeDriftCorrection;
-        int lookBehind = (- lookBehindInterval) + timeDriftCorrection;
-        if(train) {
+        int lookBehind = (-lookBehindInterval) + timeDriftCorrection;
+        if (train) {
             lookAhead = MAX_TIME_DRIFT_TRAINING;
             lookBehind = MAX_TIME_DRIFT_TRAINING;
         }

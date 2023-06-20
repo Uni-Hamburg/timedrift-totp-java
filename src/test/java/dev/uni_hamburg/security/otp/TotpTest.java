@@ -53,7 +53,7 @@ public class TotpTest {
         calendar.add(Calendar.SECOND, seconds);
         LOGGER.info("Updated time (+" + seconds + "): " + calendar.getTime());
         long currentTimeSeconds = calendar.getTimeInMillis() / 1000;
-        LOGGER.info("Interval: " + (currentTimeSeconds/30));
+        LOGGER.info("Interval: " + (currentTimeSeconds / 30));
         return currentTimeSeconds / 30;
     }
 
