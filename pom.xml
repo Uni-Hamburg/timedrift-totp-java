@@ -25,8 +25,11 @@
 
     <groupId>dev.uni-hamburg</groupId>
     <artifactId>timedrift-totp-java</artifactId>
-    <version>0.2.0</version>
+    <version>2.0.0</version>
     <packaging>jar</packaging>
+    <description>Implements RFC 6238 with a mechanism to support time drifting hardware tokens which do not support time
+        syncs.
+    </description>
 
     <name>timedrift-totp-java</name>
     <url>https://github.com/Uni-Hamburg/timedrift-totp-java</url>
