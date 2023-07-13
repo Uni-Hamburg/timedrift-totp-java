@@ -87,7 +87,7 @@ public final class TimeDriftTotp extends Totp {
         int lookBehind = (-lookBehindInterval) + timeDriftCorrection;
         if (train) {
             lookAhead = MAX_TIME_DRIFT_TRAINING;
-            lookBehind = MAX_TIME_DRIFT_TRAINING;
+            lookBehind = -MAX_TIME_DRIFT_TRAINING;
         }
 
         for (int i = lookAhead; i >= lookBehind; --i) {
