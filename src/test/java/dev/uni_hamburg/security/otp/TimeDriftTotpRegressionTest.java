@@ -49,6 +49,9 @@ public class TimeDriftTotpRegressionTest {
 
     protected long addElapsedTime(int seconds) {
         Calendar calendar = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"));
+        // To produce deterministic results we fix the base to 0s and 0ms
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
         LOGGER.info("Current time: " + calendar.getTime());
         calendar.add(Calendar.SECOND, seconds);
         LOGGER.info("Updated time (+" + seconds + "): " + calendar.getTime());
@@ -106,6 +109,7 @@ public class TimeDriftTotpRegressionTest {
         String otp = totp.now();
         when(clock.getCurrentInterval()).thenReturn(addElapsedTime(10));
         assertTrue("OTP should be valid", totp.verify(otp));
+        assertEquals(0, totp.getTimeDriftCorrection());
     }
 
     @Test
@@ -113,6 +117,7 @@ public class TimeDriftTotpRegressionTest {
         String otp = totp.now();
         when(clock.getCurrentInterval()).thenReturn(addElapsedTime(20));
         assertTrue("OTP should be valid", totp.verify(otp));
+        assertEquals(0, totp.getTimeDriftCorrection());
     }
 
     @Test
@@ -120,6 +125,15 @@ public class TimeDriftTotpRegressionTest {
         String otp = totp.now();
         when(clock.getCurrentInterval()).thenReturn(addElapsedTime(25));
         assertTrue("OTP should be valid", totp.verify(otp));
+        assertEquals(0, totp.getTimeDriftCorrection());
+    }
+
+    @Test
+    public void testOtpAfter29seconds() throws Exception {
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(29));
+        assertTrue("OTP should be valid", totp.verify(otp));
+        assertEquals(0, totp.getTimeDriftCorrection());
     }
 
     @Test
@@ -127,51 +141,27 @@ public class TimeDriftTotpRegressionTest {
         String otp = totp.now();
         when(clock.getCurrentInterval()).thenReturn(addElapsedTime(30));
         assertTrue("OTP should be valid", totp.verify(otp));
+        assertEquals(-1, totp.getTimeDriftCorrection());
     }
 
     @Test
     public void testOtpAfter31seconds() throws Exception {
-        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(0) - 1);
         String otp = totp.now();
         when(clock.getCurrentInterval()).thenReturn(addElapsedTime(31));
-        assertFalse("OTP should be invalid", totp.verify(otp));
-    }
-
-    @Test
-    public void testOtpAfter32seconds() throws Exception {
-        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(0) - 1);
-        String otp = totp.now();
-        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(31));
-        assertFalse("OTP should be invalid", totp.verify(otp));
-    }
-
-    @Test
-    public void testOtpAfter40seconds() throws Exception {
-        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(0) - 1);
-        String otp = totp.now();
-        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(40));
-        assertFalse("OTP should be invalid", totp.verify(otp));
-    }
-
-    @Test
-    public void testOtpAfter50seconds() throws Exception {
-        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(0) - 1);
-        String otp = totp.now();
-        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(50));
-        assertFalse("OTP should be invalid", totp.verify(otp));
+        assertTrue("OTP should be invalid", totp.verify(otp));
+        assertEquals(-1, totp.getTimeDriftCorrection());
     }
 
     @Test
     public void testOtpAfter59seconds() throws Exception {
-        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(0) - 1);
         String otp = totp.now();
         when(clock.getCurrentInterval()).thenReturn(addElapsedTime(59));
-        assertFalse("OTP should be invalid", totp.verify(otp));
+        assertTrue("OTP should be invalid", totp.verify(otp));
+        assertEquals(-1, totp.getTimeDriftCorrection());
     }
 
     @Test
     public void testOtpAfter60seconds() throws Exception {
-        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(0) - 1);
         String otp = totp.now();
         when(clock.getCurrentInterval()).thenReturn(addElapsedTime(60));
         assertFalse("OTP should be invalid", totp.verify(otp));
@@ -179,9 +169,222 @@ public class TimeDriftTotpRegressionTest {
 
     @Test
     public void testOtpAfter61seconds() throws Exception {
-        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(0) - 1);
         String otp = totp.now();
         when(clock.getCurrentInterval()).thenReturn(addElapsedTime(61));
         assertFalse("OTP should be invalid", totp.verify(otp));
+    }
+
+    @Test
+    public void testOtpLookBack2After29seconds() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,0,2);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(29));
+        assertTrue("OTP should be valid", totp.verify(otp));
+        assertEquals(0, totp.getTimeDriftCorrection());
+    }
+
+    @Test
+    public void testOtpLookBack2After30seconds() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,0,2);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(30));
+        assertTrue("OTP should be valid", totp.verify(otp));
+        assertEquals(-1, totp.getTimeDriftCorrection());
+    }
+
+    @Test
+    public void testOtpLookBack2After31seconds() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,0,2);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(31));
+        assertTrue("OTP should be valid", totp.verify(otp));
+        assertEquals(-1, totp.getTimeDriftCorrection());
+    }
+
+    @Test
+    public void testOtpLookBack2After59seconds() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,0,2);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(59));
+        assertTrue("OTP should be valid", totp.verify(otp));
+        assertEquals(-1, totp.getTimeDriftCorrection());
+    }
+
+    @Test
+    public void testOtpLookBack2After60seconds() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,0,2);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(60));
+        assertTrue("OTP should be valid", totp.verify(otp));
+        assertEquals(-2, totp.getTimeDriftCorrection());
+    }
+
+    @Test
+    public void testOtpLookBack2After61seconds() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,0,2);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(61));
+        assertTrue("OTP should be valid", totp.verify(otp));
+        assertEquals(-2, totp.getTimeDriftCorrection());
+    }
+
+    @Test
+    public void testOtpLookBack2After89seconds() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,0,2);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(89));
+        assertTrue("OTP should be valid", totp.verify(otp));
+        assertEquals(-2, totp.getTimeDriftCorrection());
+    }
+
+    @Test
+    public void testOtpLookBack2After90seconds() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,0,2);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(90));
+        assertFalse("OTP should be invalid", totp.verify(otp));
+    }
+
+    @Test
+    public void testOtpLookBack2After91seconds() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,0,2);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(91));
+        assertFalse("OTP should be invalid", totp.verify(otp));
+    }
+
+    @Test
+    public void testOtpLookAhead2Before29seconds() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,2,0);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(-29));
+        assertTrue("OTP should be valid", totp.verify(otp));
+        assertEquals(1, totp.getTimeDriftCorrection());
+    }
+
+    @Test
+    public void testOtpLookAhead2Before30seconds() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,2,0);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(-30));
+        assertTrue("OTP should be valid", totp.verify(otp));
+        assertEquals(1, totp.getTimeDriftCorrection());
+    }
+
+    @Test
+    public void testOtpLookAhead2Before31seconds() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,2,0);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(-31));
+        assertTrue("OTP should be valid", totp.verify(otp));
+        assertEquals(2, totp.getTimeDriftCorrection());
+    }
+
+    @Test
+    public void testOtpLookAhead2Before59seconds() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,2,0);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(-59));
+        assertTrue("OTP should be valid", totp.verify(otp));
+        assertEquals(2, totp.getTimeDriftCorrection());
+    }
+
+    @Test
+    public void testOtpLookAhead2Before60seconds() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,2,0);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(-60));
+        assertTrue("OTP should be invalid", totp.verify(otp));
+        assertEquals(2, totp.getTimeDriftCorrection());
+    }
+
+    @Test
+    public void testOtpLookAhead2Before61seconds() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,2,0);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(-61));
+        assertFalse("OTP should be invalid", totp.verify(otp));
+    }
+
+    @Test
+    public void testOtpLookAhead2Before89seconds() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,2,0);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(-89));
+        assertFalse("OTP should be invalid", totp.verify(otp));
+    }
+
+    @Test
+    public void testOtpLookAhead2Before90seconds() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,2,0);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(addElapsedTime(-90));
+        assertFalse("OTP should be invalid", totp.verify(otp));
+    }
+
+    @Test
+    public void testTrainDrift30Behind() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,0,2);
+        when(clock.getCurrentInterval()).thenReturn(0L);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(30L);
+        assertTrue("OTP should be valid", totp.train(otp));
+        assertEquals(-30, totp.getTimeDriftCorrection());
+        assertTrue("OTP Should be Valid", totp.verify(otp));
+    }
+
+    @Test
+    public void testTrainDrift30Ahead() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,0,2);
+        when(clock.getCurrentInterval()).thenReturn(30L);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(0L);
+        assertTrue("OTP should be valid", totp.train(otp));
+        assertEquals(30, totp.getTimeDriftCorrection());
+        assertTrue("OTP Should be Valid", totp.verify(otp));
+    }
+
+    @Test
+    public void testTrainDrift20Behind() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,0,2);
+        when(clock.getCurrentInterval()).thenReturn(0L);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(20L);
+        assertTrue("OTP should be valid", totp.train(otp));
+        assertEquals(-20, totp.getTimeDriftCorrection());
+        assertTrue("OTP Should be Valid", totp.verify(otp));
+    }
+
+    @Test
+    public void testTrainDrift20Ahead() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,0,2);
+        when(clock.getCurrentInterval()).thenReturn(20L);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(0L);
+        assertTrue("OTP should be valid", totp.train(otp));
+        assertEquals(20, totp.getTimeDriftCorrection());
+        assertTrue("OTP Should be Valid", totp.verify(otp));
+    }
+
+    @Test
+    public void testTrainDrift10Behind() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,0,2);
+        when(clock.getCurrentInterval()).thenReturn(0L);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(10L);
+        assertTrue("OTP should be valid", totp.train(otp));
+        assertEquals(-10, totp.getTimeDriftCorrection());
+        assertTrue("OTP Should be Valid", totp.verify(otp));
+    }
+
+    @Test
+    public void testTrainDrift10Ahead() throws Exception {
+        TimeDriftTotp totp = new TimeDriftTotp(sharedSecret,clock,0,2);
+        when(clock.getCurrentInterval()).thenReturn(10L);
+        String otp = totp.now();
+        when(clock.getCurrentInterval()).thenReturn(0L);
+        assertTrue("OTP should be valid", totp.train(otp));
+        assertEquals(10, totp.getTimeDriftCorrection());
+        assertTrue("OTP Should be Valid", totp.verify(otp));
     }
 }
