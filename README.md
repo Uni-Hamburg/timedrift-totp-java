@@ -32,7 +32,7 @@ Add to your application's `build.gradle` file
 
 ```groovy
 dependencies {
-    compile 'dev.uni-hamburg:timedrift-otp-java:2.0.0'
+    compile 'dev.uni-hamburg:timedrift-totp-java:2.0.1'
 }
 ```
 
@@ -44,7 +44,7 @@ Include the following dependencies in your project's `pom.xml`
 
 <dependency>
     <groupId>dev.uni-hamburg</groupId>
-    <artifactId>timedrift-otp-java</artifactId>
-    <version>2.0.0</version>
+    <artifactId>timedrift-totp-java</artifactId>
+    <version>2.0.1</version>
 </dependency>
 ```
