@@ -94,12 +94,18 @@ public class Totp {
      * 
      *         Author: sweis@google.com (Steve Weis)
      */
-    public boolean verify(String otp) {
+    public boolean verify(String otp){
+        verify(otp, null);
+    }
+    
+    public boolean verify(String otp, Long validitySeconds) {
 
         long code = Long.parseLong(otp);
         long currentInterval = clock.getCurrentInterval();
-
         int pastResponse = Math.max(DELAY_WINDOW, 0);
+
+        if (validitySeconds != null)
+            pastResponse = Math.max(pastResponse, (int) (validitySeconds/30));
 
         for (int i = pastResponse; i >= 0; --i) {
             int candidate = generate(this.secret, currentInterval - i);
